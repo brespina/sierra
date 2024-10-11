@@ -24,13 +24,22 @@ def fetch_problems():
     return leetcode_data['stat_status_pairs'] 
 
 
-def filter_problems(problems):
+def filter_premium(problems):
     free_problems = []
     for p in problems:
         if p['paid_only'] == False:
             free_problems.append(p)
                     
     return free_problems
+
+# later expand this
+def filter_difficulty(problems, difficulty):
+    filtered = []
+    for p in problems:
+        if p['difficulty']['level'] == difficulty:
+            filtered.append(p)
+            
+    return filtered
  
  
 def get_embed_color(question_data):
@@ -63,13 +72,16 @@ async def on_ready():
 
 
 @bot.tree.command(name="leetcode")
-async def leetcode(interaction: discord.Interaction, include_premium: bool):
+async def leetcode(interaction: discord.Interaction, include_premium: bool, difficulty_level: int = 0):
     # grab random q from my local folder
     try:
         problems = fetch_problems() 
         # if user says no premium then filter only free questions for that user.
         if include_premium == False:
-            problems = filter_problems(problems)            
+            problems = filter_premium(problems)       
+            
+        if difficulty_level != 0:
+            problems = filter_difficulty(problems, difficulty_level) 
                     
         random_problem = random.choice(problems)
         title = random_problem['stat']['question__title']
