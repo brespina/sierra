@@ -16,7 +16,7 @@ def get_token():
   return token
 ```
 
-.gitnigore
+.gitignore
 
 ```gitignore
 sierra_token.py
